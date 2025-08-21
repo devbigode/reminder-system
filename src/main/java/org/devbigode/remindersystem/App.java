@@ -1,28 +1,45 @@
 package org.devbigode.remindersystem;
 
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import org.devbigode.remindersystem.model.DefaultValue;
 import org.devbigode.remindersystem.service.ConfigManager;
+import org.devbigode.remindersystem.service.ConfigValidator;
+import org.devbigode.remindersystem.view.NotificationView;
 
-public class App {
-    public static void main(String[] args) {
+public class App extends Application {
+    private void setupStage(Stage stage){
+        StackPane root = new StackPane();
+        Scene scene = new Scene(root, 400, 200);
+        stage.setScene(scene);
+        stage.setOpacity(0);
+        stage.show();
+    }
+
+    @Override
+    public void start(Stage stage) {
+        setupStage(stage);
+
         ConfigManager configManager = new ConfigManager("config.properties");
-
         configManager.loadConfig();
 
         String title = configManager.getProperty("title", DefaultValue.TITLE.getValue());
         String message = configManager.getProperty("message", DefaultValue.MESSAGE.getValue());
         String position = configManager.getPosition("position", DefaultValue.POSITION.getValue());
         int duration = configManager.getInt("duration", DefaultValue.DURATION.getValue());
+        String image = configManager.getProperty("image", DefaultValue.IMAGE.getValue());
         int interval = configManager.getInt("interval", DefaultValue.INTERVAL.getValue());
-        String image = configManager.getIcon("image", DefaultValue.IMAGE.getValue());
-        String type = configManager.getType("type", DefaultValue.TYPE.getValue());
 
-        System.out.println("Título: " + title);
-        System.out.println("Corpo da mensagem: " + message);
-        System.out.println("Posição da notificação: " + position);
-        System.out.println("Duração em segundos: " + duration);
-        System.out.println("Intervalo em minutos: " + interval);
-        System.out.println("Caminho da imagem: " + image);
-        System.out.println("Tipo da notificação: " + type);
+        ConfigValidator configValidator = new ConfigValidator(title, message, position, duration, interval, image);
+        configValidator.validateAllValues();
+
+        NotificationView notificationView = new NotificationView(configValidator);
+        notificationView.showNotification();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
