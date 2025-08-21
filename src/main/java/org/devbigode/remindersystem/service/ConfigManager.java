@@ -1,6 +1,5 @@
 package org.devbigode.remindersystem.service;
 
-import org.devbigode.remindersystem.model.NotificationType;
 import org.devbigode.remindersystem.model.Position;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,26 +41,6 @@ public class ConfigManager {
             return Position.valueOf(value).name();
         } catch (IllegalArgumentException e){
             return Position.valueOf(defaultValue).name();
-        }
-    }
-
-    public String getType(String key, String defaultValue){
-        String value = properties.getProperty(key, defaultValue);
-
-        try {
-            return NotificationType.valueOf(value).name();
-        } catch (IllegalArgumentException e) {
-            return NotificationType.valueOf(defaultValue).name();
-        }
-    }
-
-    public String getIcon(String key, String defaultValue){
-        String value = properties.getProperty(key, defaultValue);
-
-        try (FileInputStream inputStream = new FileInputStream(value)){
-            return value;
-        } catch (IOException e) {
-            throw new RuntimeException("Erro ao localizar arquivo: " + value, e);
         }
     }
 }
