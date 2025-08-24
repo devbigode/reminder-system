@@ -17,6 +17,7 @@ public class ConfigValidator {
         this.message = message;
         this.position = position;
         this.duration = duration;
+        this.interval = interval;
         this.image = image;
     }
 
