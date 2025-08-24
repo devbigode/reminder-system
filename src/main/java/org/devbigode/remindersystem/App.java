@@ -1,6 +1,7 @@
 package org.devbigode.remindersystem;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -8,6 +9,11 @@ import org.devbigode.remindersystem.model.DefaultValue;
 import org.devbigode.remindersystem.service.ConfigManager;
 import org.devbigode.remindersystem.service.ConfigValidator;
 import org.devbigode.remindersystem.view.NotificationView;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class App extends Application {
     private void setupStage(Stage stage){
@@ -36,7 +42,21 @@ public class App extends Application {
         configValidator.validateAllValues();
 
         NotificationView notificationView = new NotificationView(configValidator);
-        notificationView.showNotification();
+        Runnable showNotificationTask = () -> {
+            Platform.runLater(notificationView::showNotification);
+        };
+
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+        ScheduledFuture<?> scheduledFuture = executorService.scheduleAtFixedRate(showNotificationTask, 1, configValidator.getInterval(), TimeUnit.MINUTES);
+
+        Runnable stopNotifications = () -> {
+            scheduledFuture.cancel(false);
+            executorService.shutdown();
+            Platform.exit();
+            System.exit(0);
+        };
+
+        executorService.schedule(stopNotifications, 24, TimeUnit.HOURS);
     }
 
     public static void main(String[] args) {
