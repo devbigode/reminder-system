@@ -21,6 +21,22 @@ public class ConfigValidator {
         this.image = image;
     }
 
+    public static ConfigValidator getConfigValidator() {
+        ConfigManager configManager = new ConfigManager("config.properties");
+        configManager.loadConfig();
+
+        String title = configManager.getProperty("title", DefaultValue.TITLE.getValue());
+        String message = configManager.getProperty("message", DefaultValue.MESSAGE.getValue());
+        String position = configManager.getPosition("position", DefaultValue.POSITION.getValue());
+        int duration = configManager.getInt("duration", DefaultValue.DURATION.getValue());
+        String image = configManager.getProperty("image", DefaultValue.IMAGE.getValue());
+        int interval = configManager.getInt("interval", DefaultValue.INTERVAL.getValue());
+
+        ConfigValidator configValidator = new ConfigValidator(title, message, position, duration, interval, image);
+        configValidator.validateAllValues();
+        return configValidator;
+    }
+
     public String getTitle() {
         return title;
     }
