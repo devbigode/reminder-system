@@ -2,11 +2,12 @@ package org.devbigode.remindersystem.model;
 
 public enum DefaultValue {
     TITLE("Lembrete"),
-    MESSAGE("Hora de beber água!"),
+    MESSAGE("Aviso urgente! Mude a mensagem."),
     POSITION("BOTTOM_RIGHT"),
     DURATION("10"),
-    INTERVAL("60"),
-    IMAGE("icons/water.png");
+    INTERVAL("1"),
+    IMAGE("icons/notification.png"),
+    AUDIO("audios/pleasant-notification.wav");
 
     private final String value;
 
